@@ -20,27 +20,19 @@ const nextConfig = {
     optimizeCss: process.env.NODE_ENV === "production",
   },
 
-  // env: {
-  //   NEXT_PUBLIC_URL:
-  //     process.env.NEXT_PUBLIC_URL || "https://turees.zevtabs.mn/api",
-  //   NEXT_PUBLIC_SOCKET:
-  //     process.env.NEXT_PUBLIC_SOCKET || "https://turees.zevtabs.mn",
-  //   HTTP_URL: process.env.HTTP_URL || "http://103.143.40.230:8081",
-  // },
-
-  // env: {
-  //   NEXT_PUBLIC_URL:
-  //     process.env.NEXT_PUBLIC_URL || "https://rently.zevtabs.mn/api",
-  //   NEXT_PUBLIC_SOCKET:
-  //     process.env.NEXT_PUBLIC_SOCKET || "https://rently.zevtabs.mn",
-  //   HTTP_URL: process.env.HTTP_URL || "http://103.48.116.100:8081",
-  // },
-
   env: {
-    NEXT_PUBLIC_URL: "http://103.143.40.123:8086",
-    NEXT_PUBLIC_SOCKET: "http://103.143.40.123:8086",
-    HTTP_URL: "http://103.143.40.123:8086",
+    NEXT_PUBLIC_URL:
+      process.env.NEXT_PUBLIC_URL || "https://irts.zevtabs.mn/api",
+    NEXT_PUBLIC_SOCKET:
+      process.env.NEXT_PUBLIC_SOCKET || "https://irts.zevtabs.mn",
+    HTTP_URL: process.env.HTTP_URL || "http://103.143.40.123:8086",
   },
+
+  // env: {
+  //   NEXT_PUBLIC_URL: "http://103.143.40.123:8086",
+  //   NEXT_PUBLIC_SOCKET: "http://103.143.40.123:8086",
+  //   HTTP_URL: "http://103.143.40.123:8086",
+  // },
 
   webpack: (config, { isServer, dev }) => {
     // Optimize bundle splitting
