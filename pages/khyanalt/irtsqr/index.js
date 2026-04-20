@@ -204,7 +204,7 @@ function IrtsQR({ token }) {
               {ajiltan?.ner} <span className="text-green-600">✓</span>
             </div>
 
-            <div className="mt-3 flex gap-2 p-4">
+            <div className="mt-3 flex gap-2">
               <div className="flex-1 rounded-lg border p-2">
                 <div className="text-xs text-gray-400">Ирэх</div>
                 <div className="font-bold text-green-600">
@@ -222,7 +222,7 @@ function IrtsQR({ token }) {
           </div>
 
           {/* Stats */}
-          <div className="mt-3 flex gap-2">
+          <div className="mt-3 flex gap-2 p-4">
             <div className="flex-1 rounded-xl border border-green-600 bg-white p-3 text-center">
               <div className="font-bold text-green-600">0</div>
               <div className="text-xs text-gray-400">Хэвийн</div>
@@ -247,7 +247,7 @@ function IrtsQR({ token }) {
                 }
               }}
               className={`
-      w-full rounded-md py-4 transition-opacity
+      w-full rounded-md p-4 py-4 transition-opacity
       ${buttonState === "garakh" ? "bg-orange-100" : "bg-blue-100"}
       ${
         isButtonDisabled || buttonState === "waiting"
