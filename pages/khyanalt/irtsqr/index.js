@@ -238,14 +238,6 @@ function IrtsQR({ token }) {
               <div className="text-xs text-gray-400">Бүртгэгүй</div>
             </div>
           </div>
-
-          {/* Check-in */}
-          <div className="mt-4 flex items-center justify-center rounded-xl bg-orange-400 p-4 text-center">
-            <div className="text-white">
-              <div className="font-bold">Ирц бүртгүүлэх</div>
-              <div className="text-xs opacity-80">Гарах</div>
-            </div>
-          </div>
           {irtsUgukhEsekh && (
             <button
               disabled={isButtonDisabled || buttonState === "waiting"}
