@@ -204,7 +204,7 @@ function IrtsQR({ token }) {
               {ajiltan?.ner} <span className="text-green-600">✓</span>
             </div>
 
-            <div className="mt-3 flex gap-2">
+            <div className="mt-3 flex gap-2 p-4">
               <div className="flex-1 rounded-lg border p-2">
                 <div className="text-xs text-gray-400">Ирэх</div>
                 <div className="font-bold text-green-600">
