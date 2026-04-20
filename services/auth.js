@@ -23,6 +23,7 @@ import {
   hasOfflineAuth,
   getCachedPermissionsData,
 } from "../utils/offlineAuth";
+import useData from "hooks/useData";
 
 const isOnline = () => {
   if (typeof window === "undefined" || typeof navigator === "undefined") {
@@ -85,7 +86,7 @@ export const useBarilga = () => {
     }
     setBarilgiinId(id);
     setCookie(null, "barilgiinId", id, {
-      maxAge: 30 * 24 * 60 * 60,
+      maxAge: 60 * 60,
       path: "/",
     });
   }, []);
@@ -133,6 +134,8 @@ export const AuthProvider = ({ children }) => {
     token,
     ajiltan?.baiguullagiinId,
   );
+
+  const unuudriinIrts = useData(token, "/unuudriinIrtsAvya");
   const { barilgaSoliyo, barilgiinId } = useBarilga();
   const { t } = useTranslation();
 
@@ -299,7 +302,7 @@ export const AuthProvider = ({ children }) => {
       const { token: loginToken, result, permissionsData } = loginData;
 
       setCookie(null, "irtstoken", loginToken, {
-        maxAge: 30 * 24 * 60 * 60,
+        maxAge: 60 * 60,
         path: "/",
       });
       setToken(loginToken);
@@ -467,6 +470,7 @@ export const AuthProvider = ({ children }) => {
       barilgaSoliyo,
       barilgiinId,
       baiguulgiinErkhiinJagsaalt,
+      unuudriinIrts,
     }),
     [
       token,
@@ -480,6 +484,7 @@ export const AuthProvider = ({ children }) => {
       syncOfflineData,
       ajiltanMutate,
       baiguullagaMutate,
+      unuudriinIrts,
     ],
   );
 

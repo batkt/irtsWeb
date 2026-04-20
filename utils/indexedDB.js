@@ -1,6 +1,6 @@
 import { openDB as idbOpen } from "idb";
 
-const DB_NAME = "turees-db";
+const DB_NAME = "irts-db";
 const DB_VERSION = 11;
 
 const STORES = {
@@ -103,7 +103,7 @@ export async function deleteOfflinePayment(id) {
   }
 }
 
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_TTL_MS = 60 * 60 * 1000; // 24 hours
 
 // Generic cache helpers for list/data caching
 // setCache is intentionally disabled — no new data is written to the cache store
@@ -170,7 +170,7 @@ export async function searchCacheByPrefix(prefix) {
     const db = await openDB();
     const allKeys = await db.getAllKeys(STORES.CACHE);
     const matchingKeys = allKeys.filter(
-      (key) => typeof key === "string" && key.startsWith(prefix)
+      (key) => typeof key === "string" && key.startsWith(prefix),
     );
 
     if (matchingKeys.length === 0) return null;
