@@ -11,7 +11,7 @@ function IrtsQR({ token }) {
   const [checked, setChecked] = useState(false);
   const [waiting, setWaiting] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [countdown, setCountdown] = useState(5);
+  const [countdown, setCountdown] = useState(3);
   const [isLoading, setIsLoading] = useState(false);
   const [successDialog, setSuccessDialog] = useState(false);
   const [burtguulsenTsag, setBurtguulsenTsag] = useState("");
@@ -36,14 +36,20 @@ function IrtsQR({ token }) {
 
     const now = new Date();
     const tsainiiNeekhTsag = new Date();
+    const tsainiiKhaakhTsag = new Date();
     const khaakhTsag = new Date();
 
     setTime(tsainiiNeekhTsag, tsag?.tsainiiNeekhTsag); // 12:00
+    setTime(tsainiiKhaakhTsag, tsag?.tsainiiKhaakhTsag); // 13:00
     setTime(khaakhTsag, tsag?.khaakhTsag); // 17:00
 
     if (hasYawsanTsag) return null;
     if (!hasIrsenTsag) return "orokh";
-    if (now >= tsainiiNeekhTsag) {
+    if (
+      now >= tsainiiNeekhTsag &&
+      now < tsainiiKhaakhTsag &&
+      !hasTsainiiIrsen
+    ) {
       if (!hasTsainiiGarsan) return "tsainiiGarakh"; // Цайны гарах
 
       // Цайны гарсан цагаас + 1 цаг хүртэл орох боломжтой
@@ -102,10 +108,8 @@ function IrtsQR({ token }) {
       // Хэрэглэгчийн IP авах
       const ipResponse = await fetch("https://api.ipify.org?format=json");
       const { ip } = await ipResponse.json();
-      console.log("Хэрэглэгчийн IP:", ip);
 
       const ua = navigator.userAgent;
-      console.log("User Agent:", ua);
 
       const tokhiromjiinMedeelel = {
         userAgent: ua,
@@ -148,16 +152,17 @@ function IrtsQR({ token }) {
 
   const ilgeekh = (ip, action, tokhiromjiinMedeelel) => {
     const urn =
-      action === "garakh" ? "/garsanTsagBurtguulye" : "/irtsBurtguulye";
+      action === "orokh" ? "/irtsBurtguulye" : "/garsanTsagBurtguulye";
 
     uilchilgee(token)
       .post(urn, {
         barilgiinId: barilgiinId,
         ip: ip,
         tokhiromjiinMedeelel: tokhiromjiinMedeelel,
+        ajiltan: ajiltan,
+        turul: action,
       })
       .then(({ data }) => {
-        console.log("Бүртгэлийн үр дүн:", JSON.stringify(data));
         if (data === "Amjilttai") {
           unuudriinIrts.mutate();
           // Dialog нээх
@@ -180,7 +185,15 @@ function IrtsQR({ token }) {
         }
         setIsLoading(false);
       })
-      .catch((e) => aldaaBarigch(e));
+      .catch((e) => {
+        aldaaBarigch(e);
+        setIsLoading(false);
+        notification.error({
+          message: "Анхааруулга",
+          description:
+            "Бүртгэл хийх явцад асуудал гарлаа. Дахин оролдоно уу." + e,
+        });
+      });
   };
 
   return (
@@ -266,8 +279,10 @@ function IrtsQR({ token }) {
                     ? `${countdown} секунд`
                     : buttonState === "garakh"
                     ? "Гарах"
-                    : buttonState === "dahinBurtguulye"
-                    ? "Дахин бүртгүүлэх"
+                    : buttonState === "tsainiiGarakh"
+                    ? "Гарах (Цайны цаг)"
+                    : buttonState === "tsainiiOrokh"
+                    ? "Орох (Цайны цаг)"
                     : buttonState === "waiting"
                     ? "Цайны цаг"
                     : "Орох"}

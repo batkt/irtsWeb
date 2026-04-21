@@ -15,7 +15,6 @@ import { khuudasnuud } from "tools/logic/khereglegchiinErkhiinTokhirgoo";
 import { toast } from "sonner";
 
 function index({ token, data }) {
-  console.log("-------------------->>>" + data?.ner);
   const { khuudasniiJagsaalt } = useKhuudasniiJagsaalt(token);
   const router = useRouter();
   const { t } = useTranslation();
