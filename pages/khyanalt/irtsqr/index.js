@@ -216,6 +216,9 @@ function IrtsQR({ token }) {
             <div className="font-bold">
               {ajiltan?.ner} <span className="text-green-600">✓</span>
             </div>
+            <h2 className="mt-1 text-sm font-normal text-orange-600">
+              {ajiltan?.albanTushaal}
+            </h2>
 
             <div className="mt-3 flex gap-2">
               <div className="flex-1 rounded-lg border p-2">
