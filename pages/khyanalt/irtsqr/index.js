@@ -74,7 +74,7 @@ function IrtsQR({ token }) {
 
   useEffect(() => {
     if (buttonState === "garakh") {
-      setCountdown(5);
+      setCountdown(3);
       setIsButtonDisabled(true);
     } else {
       setIsButtonDisabled(false);
