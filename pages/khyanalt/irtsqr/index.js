@@ -51,12 +51,7 @@ function IrtsQR({ token }) {
       !hasTsainiiIrsen
     ) {
       if (!hasTsainiiGarsan) return "tsainiiGarakh"; // Цайны гарах
-
-      // Цайны гарсан цагаас + 1 цаг хүртэл орох боломжтой
-      const orohBoolomjtoi = new Date(unuudriinIrts.data.tsainiiGarsanTsag);
-      orohBoolomjtoi.setHours(orohBoolomjtoi.getHours() + 1);
-
-      if (!hasTsainiiIrsen && now <= orohBoolomjtoi) return "tsainiiOrokh"; // Цайны орох
+      if (!hasTsainiiIrsen && now < tsainiiKhaakhTsag) return "tsainiiOrokh"; // Цайны орох
 
       // Цайны орсны дараа гарах
       if (hasTsainiiIrsen && now >= khaakhTsag) return "garakh";
