@@ -45,17 +45,10 @@ function IrtsQR({ token }) {
 
     if (hasYawsanTsag) return null;
     if (!hasIrsenTsag) return "orokh";
-    if (
-      now >= tsainiiNeekhTsag &&
-      now < tsainiiKhaakhTsag &&
-      !hasTsainiiIrsen
-    ) {
-      if (!hasTsainiiGarsan) return "tsainiiGarakh"; // Цайны гарах
-      if (!hasTsainiiIrsen && now < tsainiiKhaakhTsag) return "tsainiiOrokh"; // Цайны орох
-
-      // Цайны орсны дараа гарах
+    if (now >= tsainiiNeekhTsag && !hasTsainiiIrsen) {
+      if (!hasTsainiiGarsan) return "tsainiiGarakh";
+      if (!hasTsainiiIrsen) return "tsainiiOrokh";
       if (hasTsainiiIrsen && now >= khaakhTsag) return "garakh";
-
       return "waiting";
     }
     if (now >= khaakhTsag) return "garakh";
