@@ -11,22 +11,22 @@ import {
 } from "@ant-design/icons";
 import { toInteger } from "lodash";
 
-function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
+function IrtsZasakh({ data, destroy, token, barilgiinId }, ref) {
   const [ognoo, setOgnoo] = useState(moment(data.ognoo || new Date()));
   const [tsag, setTsag] = useState({
     irsenTsag: moment(!!data.irsenTsag ? data.irsenTsag : ""),
     yawsanTsag: moment(!!data.yawsanTsag ? data.yawsanTsag : ""),
     chuluuDuussan: moment(
-      !!data.chuluuniiTurul ? data.chuluuniiTurul?.duusakhOgnoo : ""
+      !!data.chuluuniiTurul ? data.chuluuniiTurul?.duusakhOgnoo : "",
     ),
     chuluuEhelsen: moment(
-      !!data.chuluuniiTurul ? data.chuluuniiTurul?.ekhlekhOgnoo : ""
+      !!data.chuluuniiTurul ? data.chuluuniiTurul?.ekhlekhOgnoo : "",
     ),
     tasalsanDuussan: moment(
-      !!data.tasalsanTurul ? data.tasalsanTurul?.duusakhOgnoo : ""
+      !!data.tasalsanTurul ? data.tasalsanTurul?.duusakhOgnoo : "",
     ),
     tasalsanEhelsen: moment(
-      !!data.tasalsanTurul ? data.tasalsanTurul?.ekhlekhOgnoo : ""
+      !!data.tasalsanTurul ? data.tasalsanTurul?.ekhlekhOgnoo : "",
     ),
   });
 
@@ -49,7 +49,7 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
         destroy();
       },
     }),
-    []
+    [],
   );
 
   function tsagKhorwuulegch(params) {
@@ -90,7 +90,7 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
         oruulakhData.push({
           dugar: 3,
           ognoo: tsagKhorwuulegch(
-            moment(data.tasalsanTurul?.ekhlekhOgnoo).format("HH:mm")
+            moment(data.tasalsanTurul?.ekhlekhOgnoo).format("HH:mm"),
           ),
         });
       } else {
@@ -100,7 +100,7 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
         oruulakhData.push({
           dugar: 2,
           ognoo: tsagKhorwuulegch(
-            moment(data.tasalsanTurul?.ekhlekhOgnoo).format("HH:mm")
+            moment(data.tasalsanTurul?.ekhlekhOgnoo).format("HH:mm"),
           ),
         });
       } else {
@@ -113,7 +113,7 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
             .sort((a, b) => a.ognoo - b.ognoo)
             .map((a) => {
               return a.dugar;
-            })
+            }),
         );
       }
       setTuluvSongolt(tuluvSongolt);
@@ -130,10 +130,10 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
     if (data === "new") {
       setTsag({
         irsenTsag: moment(ognoo).format(
-          `YYYY-MM-DD ${salbariinStag.neekhTsag}:00`
+          `YYYY-MM-DD ${salbariinStag.neekhTsag}:00`,
         ),
         yawsanTsag: moment(ognoo).format(
-          `YYYY-MM-DD ${salbariinStag.khaakhTsag}:00`
+          `YYYY-MM-DD ${salbariinStag.khaakhTsag}:00`,
         ),
         chuluuDuussan: moment(ognoo).format(`YYYY-MM-DD 00:00:00`),
         chuluuEhelsen: moment(ognoo).format(`YYYY-MM-DD 00:00:00`),
@@ -144,7 +144,7 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
     uilchilgee(token)
       .post("/ajillakhTsagAvya", {
         ognoo: moment(ognoo).format("YYYY-MM-DD 00:00:00"),
-        salbariinId: salbariinId,
+        barilgiinId: barilgiinId,
       })
       .then(({ data }) => {
         setSalbariinStag(data);
@@ -152,11 +152,11 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
   }, [ognoo]);
   return (
     <div className=" flex flex-col justify-center px-4 ">
-      <div className="w-full py-2 px-3 flex justify-between border-b">
+      <div className="flex w-full justify-between border-b px-3 py-2">
         <div className="dark:text-gray-200">Төлөв</div>
         {
           <div
-            className={`flex items-center font-medium cursor-pointer gap-2 ${
+            className={`flex cursor-pointer items-center gap-2 font-medium ${
               data.tuluv === "kheviin"
                 ? "text-green-500"
                 : data.tuluv === "khotsorson"
@@ -201,7 +201,7 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
         }
       </div>
       <div
-        className={`w-full flex py-2 px-3 items-center justify-between border-b bg-opacity-5 ${
+        className={`flex w-full items-center justify-between border-b bg-opacity-5 px-3 py-2 ${
           data.tuluv === "kheviin"
             ? "bg-green-500"
             : data.tuluv === "khotsorson"
@@ -216,17 +216,21 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
         }`}
       >
         <div className="dark:text-gray-200">Огноо</div>
-        <div className="dark:text-gray-200">{moment(data.ognoo).format("YYYY-MM-DD")}</div>
+        <div className="dark:text-gray-200">
+          {moment(data.ognoo).format("YYYY-MM-DD")}
+        </div>
       </div>
       {data.irsenTsag && data.yawsanTsag && (
-        <div className="w-full py-2 px-3 flex justify-between border-b">
+        <div className="flex w-full justify-between border-b px-3 py-2">
           <div className="dark:text-gray-200">Ирсэн цаг</div>
-          <div className="dark:text-gray-200">{moment(data.irsenTsag).format("HH:mm:ss")}</div>
+          <div className="dark:text-gray-200">
+            {moment(data.irsenTsag).format("HH:mm:ss")}
+          </div>
         </div>
       )}
       {data.irsenTsag && data.yawsanTsag && (
         <div
-          className={`w-full flex py-2 px-3 items-center justify-between border-b bg-opacity-5 ${
+          className={`flex w-full items-center justify-between border-b bg-opacity-5 px-3 py-2 ${
             data.tuluv === "kheviin"
               ? "bg-green-500"
               : data.tuluv === "khotsorson"
@@ -241,10 +245,12 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
           }`}
         >
           <div className="dark:text-gray-200">Гарсан цаг</div>
-          <div className="dark:text-gray-200">{moment(data.yawsanTsag).format("HH:mm:ss")}</div>
+          <div className="dark:text-gray-200">
+            {moment(data.yawsanTsag).format("HH:mm:ss")}
+          </div>
         </div>
       )}
-      <div className="w-full py-2 px-3 flex justify-between border-b">
+      <div className="flex w-full justify-between border-b px-3 py-2">
         <div className="dark:text-gray-200">Хоцорсон цаг</div>
         <div className="dark:text-gray-200">
           {data?.khotsorsonMinut > 0 ? (
@@ -260,7 +266,7 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
         </div>
       </div>
       <div
-        className={`w-full flex py-2 px-3 items-center justify-between border-b bg-opacity-5 ${
+        className={`flex w-full items-center justify-between border-b bg-opacity-5 px-3 py-2 ${
           data.tuluv === "kheviin"
             ? "bg-green-500"
             : data.tuluv === "khotsorson"
@@ -289,7 +295,7 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
         )}
       </div>
       {!!data.tasalsanTurul && (
-        <div className="w-full py-2 px-3 flex justify-between border-b">
+        <div className="flex w-full justify-between border-b px-3 py-2">
           <div className="dark:text-gray-200">Тасалсан цаг</div>
           <div className="dark:text-gray-200">
             {moment(data.tasalsanTurul.ekhlekhOgnoo).format("HH:mm")} -{" "}
@@ -301,7 +307,7 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
         <div
           className={
             !!data.tasalsanTurul
-              ? `w-full flex py-2 px-3 items-center justify-between border-b bg-opacity-5 ${
+              ? `flex w-full items-center justify-between border-b bg-opacity-5 px-3 py-2 ${
                   data.tuluv === "kheviin"
                     ? "bg-green-500"
                     : data.tuluv === "khotsorson"
@@ -314,7 +320,7 @@ function IrtsZasakh({ data, destroy, token, salbariinId }, ref) {
                     ? "bg-yellow-500"
                     : "bg-gray-400"
                 }`
-              : "w-full py-2 px-3 flex justify-between border-b"
+              : "flex w-full justify-between border-b px-3 py-2"
           }
         >
           <div className="dark:text-gray-200">Чөлөөтэй цаг</div>

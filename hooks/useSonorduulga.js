@@ -9,29 +9,33 @@ const fetcher = (
   url,
   token,
   baiguullagiinId,
-  salbariinId,
+  barilgiinId,
   ajiltniiId,
-  { jagsaalt, ...khuudaslalt }
+  { jagsaalt, ...khuudaslalt },
 ) =>
   axios(token)
     .get(url, {
       params: {
         ...khuudaslalt,
-        query: { baiguullagiinId, salbariinId ,
-          $or :[
-            {baiguullagiinId, salbariinId
-            },
+        query: {
+          baiguullagiinId,
+          barilgiinId,
+          $or: [
+            { baiguullagiinId, barilgiinId },
             {
-               $and : [
-                  {
-                   khuleenAvagchiinId : ajiltniiId
+              $and: [
+                {
+                  khuleenAvagchiinId: ajiltniiId,
+                },
+                {
+                  turul: {
+                    $in: ["daalgavar", "setgegdel"],
                   },
-                  {
-                     turul : {
-                        $in : ["daalgavar","setgegdel"]
-                     }
-                  }]
-            }],},
+                },
+              ],
+            },
+          ],
+        },
         order: { ognoo: -1 },
       },
     })
@@ -42,7 +46,7 @@ const tooFetcher = (
   url,
   token,
   baiguullagiinId,
-  { jagsaalt, ...khuudaslalt }
+  { jagsaalt, ...khuudaslalt },
 ) =>
   axios(token)
     .get(url, {
@@ -55,7 +59,7 @@ const tooFetcher = (
 
 var sonorduulgaId = null;
 
-function useSonorduulga(token, ajiltanId, salbariinId) {
+function useSonorduulga(token, ajiltanId, barilgiinId) {
   const { baiguullaga, ajiltan } = useAuth();
 
   const [khuudaslalt, setKhuudaslalt] = useState({
@@ -65,23 +69,30 @@ function useSonorduulga(token, ajiltanId, salbariinId) {
   });
   const { data, mutate } = useSWR(
     !!token && !!baiguullaga?._id
-      ? ["/sonorduulga", token, baiguullaga?._id, salbariinId, ajiltan?._id, khuudaslalt]
+      ? [
+          "/sonorduulga",
+          token,
+          baiguullaga?._id,
+          barilgiinId,
+          ajiltan?._id,
+          khuudaslalt,
+        ]
       : null,
     fetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
   const too = useSWR(
     !!token && !!baiguullaga?._id
       ? [
-        "/sonorduulgaKharaaguiTooAvya",
-        token,
-        baiguullaga?._id,
-        salbariinId,
-        khuudaslalt,
-      ]
+          "/sonorduulgaKharaaguiTooAvya",
+          token,
+          baiguullaga?._id,
+          barilgiinId,
+          khuudaslalt,
+        ]
       : null,
     tooFetcher,
-    { revalidateOnFocus: false }
+    { revalidateOnFocus: false },
   );
 
   useEffect(() => {
@@ -90,17 +101,31 @@ function useSonorduulga(token, ajiltanId, salbariinId) {
         const key = `${Math.floor(Math.random() * 100)}+${Date.now()}`;
         mutate();
         too.mutate();
-        if (!!sonorduulga && (!!sonorduulga?.turul || !!sonorduulga?.notifTurul) && sonorduulgaId !== sonorduulga?._id && (ajiltan?.erkh === "Admin" || !!ajiltan?.salbaruud?.find(a=> a === sonorduulga?.salbariinId))) {
+        if (
+          !!sonorduulga &&
+          (!!sonorduulga?.turul || !!sonorduulga?.notifTurul) &&
+          sonorduulgaId !== sonorduulga?._id &&
+          (ajiltan?.erkh === "Admin" ||
+            !!ajiltan?.salbaruud?.find((a) => a === sonorduulga?.barilgiinId))
+        ) {
           function onClose() {
             notification.close(key);
           }
           sonorduulgaId = sonorduulga?._id;
-          if (sonorduulga?.turul === "daalgavar" || sonorduulga?.turul === "setgegdel") {
+          if (
+            sonorduulga?.turul === "daalgavar" ||
+            sonorduulga?.turul === "setgegdel"
+          ) {
             if (ajiltan._id === sonorduulga.khuleenAvagchiinId) {
               notification.open({
                 key: key,
                 message: (
-                  <Sonorduulga token={token} ajiltan={ajiltan} {...sonorduulga} onClose={onClose} />
+                  <Sonorduulga
+                    token={token}
+                    ajiltan={ajiltan}
+                    {...sonorduulga}
+                    onClose={onClose}
+                  />
                 ),
                 closeIcon: () => null,
                 duration: 100000,
@@ -110,7 +135,12 @@ function useSonorduulga(token, ajiltanId, salbariinId) {
             notification.open({
               key: key,
               message: (
-                <Sonorduulga token={token} ajiltan={ajiltan} {...sonorduulga} onClose={onClose} />
+                <Sonorduulga
+                  token={token}
+                  ajiltan={ajiltan}
+                  {...sonorduulga}
+                  onClose={onClose}
+                />
               ),
               closeIcon: () => null,
               duration: 100000,
@@ -123,20 +153,25 @@ function useSonorduulga(token, ajiltanId, salbariinId) {
       socket().off(`baiguullaga${baiguullaga?._id}`);
     };
   }, [baiguullaga]);
-    useEffect(()=>{
-        if(!!ajiltanId)
-            socket().on(`ajiltan${ajiltanId}`, (res) => {
-                if(res.type==='logout'&&res?.ip){
-                    message.warn(''+res.ip+' IP-тай төхөөрөмжөөс давхар нэвтэрсэн тул таны холболт саллаа.', 5);
-                    setTimeout(()=>{
-                        window.location.href = "/";
-                    },4000)
-                }
-            });
-        return () => {
-            socket().off(`ajiltan${ajiltanId}`);
-        };
-    },[ajiltanId]);
+  useEffect(() => {
+    if (!!ajiltanId)
+      socket().on(`ajiltan${ajiltanId}`, (res) => {
+        if (res.type === "logout" && res?.ip) {
+          notification.warn(
+            "" +
+              res.ip +
+              " IP-тай төхөөрөмжөөс давхар нэвтэрсэн тул таны холболт саллаа.",
+            5,
+          );
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 4000);
+        }
+      });
+    return () => {
+      socket().off(`ajiltan${ajiltanId}`);
+    };
+  }, [ajiltanId]);
 
   function refresh() {
     setKhuudaslalt({

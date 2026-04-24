@@ -5,8 +5,7 @@ import { ThemeProvider } from "next-themes";
 import { clearExpiredCache } from "../utils/indexedDB";
 import { ConfigProvider } from "antd";
 import mnMN from "antd/lib/locale/mn_MN";
-import moment from "moment";
-import "moment/locale/mn";
+import dayjs from "../utils/dayjs";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -35,26 +34,31 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 );
 
 // Lazy load AOS (animation library) - only needed on client
 const loadAOS = () => {
   if (typeof window !== "undefined") {
-    import("aos/dist/aos.css").then(() => {
-      const Aos = require("aos");
-      Aos.init({ once: true, duration: 800, easing: "ease-out-cubic", offset: 50 });
-    }).catch(() => {
-      // AOS failed to load, continue silently
-    });
+    import("aos/dist/aos.css")
+      .then(() => {
+        const Aos = require("aos");
+        Aos.init({
+          once: true,
+          duration: 800,
+          easing: "ease-out-cubic",
+          offset: 50,
+        });
+      })
+      .catch(() => {
+        // AOS failed to load, continue silently
+      });
   }
 };
 
-moment.locale("mn");
-
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
-  
+
   useEffect(() => {
     // Load AOS on client side only
     loadAOS();
@@ -65,16 +69,16 @@ function MyApp({ Component, pageProps }) {
   return (
     <ThemeProvider attribute="class">
       <AuthProvider>
-        <Toaster 
-          position="top-right" 
-          richColors 
-          suppressHydrationWarning 
+        <Toaster
+          position="top-right"
+          richColors
+          suppressHydrationWarning
           expand={true}
           gap={8}
           toastOptions={{
             style: {
-              maxWidth: '400px',
-              wordBreak: 'break-word',
+              maxWidth: "400px",
+              wordBreak: "break-word",
             },
           }}
         />

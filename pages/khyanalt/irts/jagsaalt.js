@@ -57,8 +57,8 @@ function TableGarchig({ mur, i, onChangeTable }) {
               : undefined,
           );
       }}
-      className={` ${mur.full} select-none ${
-        mur?.mobileHide && "hidden md:block"
+      className={`px-4 py-3 ${mur.full} select-none ${
+        mur?.mobileHide && "hidden md:table-cell"
       } relative ${
         mur.field !== "noSort" && "cursor-pointer hover:bg-blue-200"
       } transition-colors dark:hover:bg-gray-900`}
@@ -87,10 +87,10 @@ function TableGarchig({ mur, i, onChangeTable }) {
 }
 
 function jagsaalt({ token }) {
-  const { baiguullaga, salbariinId } = useAuth();
+  const { baiguullaga, barilgiinId } = useAuth();
   const printRef = React.useRef(null);
   const { order, onChangeTable } = useOrder({ ognoo: -1 });
-  const [ekhlekhOgnoo, setEkhlekhOgnoo] = useState(null);
+  const [ekhlekhOgnoo, setEkhlekhOgnoo] = useState([moment(), moment()]);
   const [shuult, setShuult] = useState({
     ajiltniiId: undefined,
     tuluv: undefined,
@@ -98,11 +98,20 @@ function jagsaalt({ token }) {
   const erstRef = React.useRef(null);
   const erstKharakhRef = React.useRef(null);
 
+  const [now, setNow] = useState(dayjs());
+
   useEffect(() => {
     if (!ekhlekhOgnoo) {
       const today = dayjs();
       setEkhlekhOgnoo([today, today]);
     }
+  }, []);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(dayjs());
+    }, 30000);
+    return () => clearInterval(timer);
   }, []);
 
   const query = useMemo(() => {
@@ -114,10 +123,10 @@ function jagsaalt({ token }) {
             $lte: ekhlekhOgnoo[1].format("YYYY-MM-DD 23:59:59"),
           }
         : undefined,
-      salbariinId: salbariinId,
+      barilgiinId: barilgiinId,
       tuluv: shuult.tuluv === "todorhoigue" ? { $exists: false } : shuult.tuluv,
     };
-  }, [salbariinId, ekhlekhOgnoo, shuult]);
+  }, [barilgiinId, ekhlekhOgnoo, shuult]);
 
   const { ajilchdiinGaralt, setAjiltniiKhuudaslalt } = useAjiltniiJagsaalt(
     token,
@@ -248,7 +257,7 @@ function jagsaalt({ token }) {
         ),
       content: (
         <IrtsZasakh
-          salbariinId={salbariinId}
+          barilgiinId={barilgiinId}
           ajilchdiinGaralt={ajilchdiinGaralt}
           setAjiltniiKhuudaslalt={setAjiltniiKhuudaslalt}
           data={data}
@@ -360,7 +369,7 @@ function jagsaalt({ token }) {
         ),
       content: (
         <IrtsKharakh
-          salbariinId={salbariinId}
+          barilgiinId={barilgiinId}
           data={data}
           ref={erstKharakhRef}
           token={token}
@@ -587,7 +596,7 @@ function jagsaalt({ token }) {
                   )?.albanTushaal;
                   return (
                     <tr
-                      className={`flex items-center py-2 pl-1 transition-colors hover:bg-blue-200 ${
+                      className={`transition-colors hover:bg-blue-200 ${
                         i % 2 === 0
                           ? "bg-blue-50 dark:bg-blue-900 dark:hover:bg-blue-800"
                           : "bg-white dark:bg-gray-800 dark:hover:bg-gray-900"
@@ -595,52 +604,56 @@ function jagsaalt({ token }) {
                       key={i}
                     >
                       <td
-                        className="flex w-full items-center text-left text-gray-600  dark:text-gray-200"
+                        className="px-4 py-3 text-left align-middle text-gray-600 dark:text-gray-200"
                         style={{ minWidth: "10rem" }}
                       >
-                        <div className="mx-4 flex h-9 w-14 items-center justify-center overflow-hidden rounded-full shadow-md ring-2">
-                          <img
-                            src={
-                              !!ajilchdiinGaralt?.jagsaalt.find(
-                                (a) => a._id === mur.ajiltniiId,
-                              )?.zurgiinNer
-                                ? `${url}/ajiltniiZuragAvya/${
-                                    ajilchdiinGaralt?.jagsaalt.find(
-                                      (a) => a._id === mur.ajiltniiId,
-                                    ).baiguullagiinId
-                                  }/${
-                                    ajilchdiinGaralt?.jagsaalt.find(
-                                      (a) => a._id === mur.ajiltniiId,
-                                    ).zurgiinNer
-                                  }`
-                                : "/profile.svg"
-                            }
-                            className=" h-full"
-                          />
-                        </div>
-                        <div className="h-10 w-full truncate text-base font-semibold ">
-                          {mur.ajiltniiNer}
-                          <Tooltip
-                            title={
-                              albanTushaal?.length > 12 && (
-                                <div>{albanTushaal}</div>
-                              )
-                            }
-                          >
-                            <div className="-mt-1 truncate text-sm font-normal text-gray-400">
-                              {!!albanTushaal ? albanTushaal : "Албан тушаал"}
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-9 w-14 items-center justify-center overflow-hidden rounded-full shadow-md ring-2">
+                            <img
+                              src={
+                                !!ajilchdiinGaralt?.jagsaalt.find(
+                                  (a) => a._id === mur.ajiltniiId,
+                                )?.zurgiinNer
+                                  ? `${url}/ajiltniiZuragAvya/${
+                                      ajilchdiinGaralt?.jagsaalt.find(
+                                        (a) => a._id === mur.ajiltniiId,
+                                      ).baiguullagiinId
+                                    }/${
+                                      ajilchdiinGaralt?.jagsaalt.find(
+                                        (a) => a._id === mur.ajiltniiId,
+                                      ).zurgiinNer
+                                    }`
+                                  : "/profile.svg"
+                              }
+                              className="h-full"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="truncate text-base font-semibold">
+                              {mur.ajiltniiNer}
                             </div>
-                          </Tooltip>
+                            <Tooltip
+                              title={
+                                albanTushaal?.length > 12 && (
+                                  <div>{albanTushaal}</div>
+                                )
+                              }
+                            >
+                              <div className="truncate text-sm font-normal text-gray-400">
+                                {!!albanTushaal ? albanTushaal : "Албан тушаал"}
+                              </div>
+                            </Tooltip>
+                          </div>
                         </div>
                       </td>
                       <td
-                        className="hidden w-full items-center justify-center overflow-hidden text-center md:flex"
+                        className="hidden px-4 py-3 text-center align-middle text-sm md:table-cell"
                         style={{ minWidth: "10rem" }}
                       >
                         {moment(mur.ognoo).format("YYYY-MM-DD")}
                       </td>
                       <td
-                        className="hidden w-full whitespace-nowrap text-center md:block"
+                        className="hidden px-4 py-3 text-center align-middle text-sm md:table-cell"
                         style={{ minWidth: "10rem" }}
                       >
                         {mur.irsenTsag
@@ -648,7 +661,7 @@ function jagsaalt({ token }) {
                           : "--:--:--"}
                       </td>
                       <td
-                        className="hidden w-full whitespace-nowrap text-center md:block"
+                        className="hidden px-4 py-3 text-center align-middle text-sm md:table-cell"
                         style={{ minWidth: "10rem" }}
                       >
                         {!!mur.yawsanTsag
@@ -656,7 +669,7 @@ function jagsaalt({ token }) {
                           : "--:--:--"}
                       </td>
                       <td
-                        className="hidden w-full whitespace-nowrap text-center md:block"
+                        className="hidden px-4 py-3 text-center align-middle text-sm md:table-cell"
                         style={{ minWidth: "10rem" }}
                       >
                         <div>
@@ -679,31 +692,19 @@ function jagsaalt({ token }) {
                         </div>
                       </td>
                       <td
-                        className="hidden w-full whitespace-nowrap text-center md:block"
+                        className="hidden px-4 py-3 text-center align-middle text-sm md:table-cell"
                         style={{ minWidth: "10rem" }}
                       >
-                        <div>
-                          {mur?.khotsorsonMinut > 0 ? (
-                            <div>
-                              {!!mur.khotsorsonMinut &&
-                                mur.khotsorsonMinut / 60 < 10 &&
-                                "0"}
-                              {!!mur.khotsorsonMinut &&
-                                toInteger(mur.khotsorsonMinut / 60)}
-                              :
-                              {!!mur.khotsorsonMinut &&
-                                mur.khotsorsonMinut % 60 < 10 &&
-                                "0"}
-                              {!!mur.khotsorsonMinut &&
-                                mur.khotsorsonMinut % 60}{" "}
-                            </div>
-                          ) : (
-                            <div>--:--</div>
-                          )}
-                        </div>
+                        {mur?.khotsorsonMinut > 0
+                          ? `${
+                              mur.khotsorsonMinut / 60 < 10 ? "0" : ""
+                            }${toInteger(mur.khotsorsonMinut / 60)}:${
+                              mur.khotsorsonMinut % 60 < 10 ? "0" : ""
+                            }${mur.khotsorsonMinut % 60}`
+                          : "--:--"}
                       </td>
                       <td
-                        className="hidden w-full items-center justify-center text-center md:flex"
+                        className="hidden px-4 py-3 text-center align-middle text-sm md:table-cell"
                         style={{ minWidth: "10rem" }}
                       >
                         {
@@ -753,7 +754,7 @@ function jagsaalt({ token }) {
                         }
                       </td>
                       <td
-                        className="hidden w-full items-center justify-center text-center md:flex"
+                        className="hidden px-4 py-3 text-center align-middle text-sm md:table-cell"
                         style={{ minWidth: "5rem" }}
                       >
                         <Popover
@@ -791,22 +792,72 @@ function jagsaalt({ token }) {
                         </Popover>
                       </td>
                       <td
-                        className="table-report__action flex w-full items-center justify-center gap-3"
-                        style={{ minWidth: "12rem" }}
+                        className="px-4 py-3 text-center align-middle text-sm md:table-cell"
+                        style={{ minWidth: "10rem" }}
                       >
                         <div
-                          className="flex cursor-pointer items-center justify-end gap-1 font-medium text-gray-600 hover:text-black dark:text-gray-300 "
-                          onClick={() => irstZasah(mur)}
+                          className={`inline-flex w-24 items-center justify-center gap-2 font-medium ${
+                            mur.tuluv === "kheviin"
+                              ? "text-green-500"
+                              : mur.tuluv === "khotsorson"
+                              ? "text-pink-500"
+                              : mur.tuluv === "chuluu"
+                              ? "text-blue-500"
+                              : mur.tuluv === "tasalsan"
+                              ? "text-red-500"
+                              : mur.tuluv === "hagas"
+                              ? "text-yellow-500"
+                              : "text-gray-400"
+                          }`}
                         >
-                          <CheckSquareOutlined />
-                          <div>Засах</div>
+                          {mur.tuluv === "kheviin" ? (
+                            <CheckCircleOutlined />
+                          ) : mur.tuluv === "khotsorson" ? (
+                            <ExclamationCircleOutlined />
+                          ) : mur.tuluv === "chuluu" ? (
+                            <MinusCircleOutlined />
+                          ) : mur.tuluv === "tasalsan" ? (
+                            <CloseCircleOutlined />
+                          ) : mur.tuluv === "hagas" ? (
+                            <img
+                              src="/halfCircle.svg"
+                              style={{ height: "15px", width: "15px" }}
+                            />
+                          ) : (
+                            <QuestionCircleOutlined />
+                          )}
+                          {mur.tuluv === "kheviin"
+                            ? "Мундаг"
+                            : mur.tuluv === "khotsorson"
+                            ? "Хоцорсон"
+                            : mur.tuluv === "chuluu"
+                            ? "Чөлөөтэй"
+                            : mur.tuluv === "tasalsan"
+                            ? "Тасалсан"
+                            : mur.tuluv === "hagas"
+                            ? "Хагас"
+                            : "Тодорхойгүй"}
                         </div>
-                        <div
-                          className="flex cursor-pointer items-center justify-start gap-1 font-medium text-green-600 hover:text-green-400"
-                          onClick={() => irstKharakh(mur)}
-                        >
-                          <EyeOutlined />
-                          <div>Харах</div>
+                      </td>
+                      <td
+                        className="px-4 py-3 text-center align-middle text-sm md:table-cell"
+                        style={{ minWidth: "12rem" }}
+                      >
+                        <div className="flex items-center justify-center gap-3">
+                          <div
+                            className="flex cursor-pointer items-center gap-1 font-medium text-gray-600 hover:text-black dark:text-gray-300"
+                            onClick={() => irstZasah(mur)}
+                          >
+                            <CheckSquareOutlined />
+                            <div>Засах</div>
+                          </div>
+                          <div
+                            className="flex cursor-pointer items-center gap-1 font-medium text-green-600 hover:text-green-400"
+                            onClick={() => irstKharakh(mur)}
+                          >
+                            <EyeOutlined />
+                            <div>Харах</div>
+                          </div>
                         </div>
                       </td>
                     </tr>
@@ -839,7 +890,7 @@ function jagsaalt({ token }) {
                   )?.albanTushaal;
                   return (
                     <tr
-                      className={`flex items-center py-2 pl-1 transition-colors hover:bg-blue-200 ${
+                      className={`transition-colors hover:bg-blue-200 ${
                         i % 2 === 0
                           ? "bg-blue-50 dark:bg-blue-900 dark:hover:bg-blue-800"
                           : "bg-white dark:bg-gray-800 dark:hover:bg-gray-900"
@@ -847,52 +898,56 @@ function jagsaalt({ token }) {
                       key={i}
                     >
                       <td
-                        className="flex  w-full items-center text-left text-gray-600  dark:text-gray-200"
+                        className="px-4 py-3 text-left align-middle text-gray-600 dark:text-gray-200"
                         style={{ minWidth: "10rem" }}
                       >
-                        <div className="mx-4 flex h-9 w-14 items-center justify-center overflow-hidden rounded-full shadow-md ring-2">
-                          <img
-                            src={
-                              !!ajilchdiinGaralt?.jagsaalt.find(
-                                (a) => a._id === mur.ajiltniiId,
-                              )?.zurgiinNer
-                                ? `${url}/ajiltniiZuragAvya/${
-                                    ajilchdiinGaralt?.jagsaalt.find(
-                                      (a) => a._id === mur.ajiltniiId,
-                                    ).baiguullagiinId
-                                  }/${
-                                    ajilchdiinGaralt?.jagsaalt.find(
-                                      (a) => a._id === mur.ajiltniiId,
-                                    ).zurgiinNer
-                                  }`
-                                : "/profile.svg"
-                            }
-                            className=" h-full"
-                          />
-                        </div>
-                        <div className="h-10 w-full truncate text-base font-semibold ">
-                          {mur.ajiltniiNer}
-                          <Tooltip
-                            title={
-                              albanTushaal?.length > 12 && (
-                                <div>{albanTushaal}</div>
-                              )
-                            }
-                          >
-                            <div className="-mt-1 truncate text-sm font-normal text-gray-400">
-                              {!!albanTushaal ? albanTushaal : "Албан тушаал"}
+                        <div className="flex items-center gap-3">
+                          <div className="flex h-9 w-14 items-center justify-center overflow-hidden rounded-full shadow-md ring-2">
+                            <img
+                              src={
+                                !!ajilchdiinGaralt?.jagsaalt.find(
+                                  (a) => a._id === mur.ajiltniiId,
+                                )?.zurgiinNer
+                                  ? `${url}/ajiltniiZuragAvya/${
+                                      ajilchdiinGaralt?.jagsaalt.find(
+                                        (a) => a._id === mur.ajiltniiId,
+                                      ).baiguullagiinId
+                                    }/${
+                                      ajilchdiinGaralt?.jagsaalt.find(
+                                        (a) => a._id === mur.ajiltniiId,
+                                      ).zurgiinNer
+                                    }`
+                                  : "/profile.svg"
+                              }
+                              className="h-full"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="truncate text-base font-semibold">
+                              {mur.ajiltniiNer}
                             </div>
-                          </Tooltip>
+                            <Tooltip
+                              title={
+                                albanTushaal?.length > 12 && (
+                                  <div>{albanTushaal}</div>
+                                )
+                              }
+                            >
+                              <div className="truncate text-sm font-normal text-gray-400">
+                                {!!albanTushaal ? albanTushaal : "Албан тушаал"}
+                              </div>
+                            </Tooltip>
+                          </div>
                         </div>
                       </td>
                       <td
-                        className="flex w-full items-center justify-center overflow-hidden text-center"
+                        className="px-4 py-3 text-center align-middle text-sm"
                         style={{ minWidth: "10rem" }}
                       >
                         {moment(mur.ognoo).format("YYYY-MM-DD")}
                       </td>
                       <td
-                        className="w-full whitespace-nowrap text-center"
+                        className="px-4 py-3 text-center align-middle text-sm"
                         style={{ minWidth: "10rem" }}
                       >
                         {mur.irsenTsag
@@ -900,7 +955,7 @@ function jagsaalt({ token }) {
                           : "--:--:--"}
                       </td>
                       <td
-                        className="w-full whitespace-nowrap text-center"
+                        className="px-4 py-3 text-center align-middle text-sm"
                         style={{ minWidth: "10rem" }}
                       >
                         {!!mur.yawsanTsag
@@ -908,54 +963,30 @@ function jagsaalt({ token }) {
                           : "--:--:--"}
                       </td>
                       <td
-                        className="w-full whitespace-nowrap text-center"
+                        className="px-4 py-3 text-center align-middle text-sm"
                         style={{ minWidth: "10rem" }}
                       >
-                        <div>
-                          {mur?.ajillasanMinut > 0 ? (
-                            <div>
-                              {!!mur.ajillasanMinut &&
-                                mur.ajillasanMinut / 60 < 10 &&
-                                "0"}
-                              {!!mur.ajillasanMinut &&
-                                toInteger(mur.ajillasanMinut / 60)}
-                              :
-                              {!!mur.ajillasanMinut &&
-                                mur.ajillasanMinut % 60 < 10 &&
-                                "0"}
-                              {!!mur.ajillasanMinut && mur.ajillasanMinut % 60}{" "}
-                            </div>
-                          ) : (
-                            <div>--:--</div>
-                          )}
-                        </div>
+                        {(() => {
+                          const minutes = getRealAjillasanMinut(mur);
+                          return typeof minutes === "number"
+                            ? minuutiigTsagBolgoh(minutes)
+                            : "--:--";
+                        })()}
                       </td>
                       <td
-                        className="w-full whitespace-nowrap text-center"
+                        className="px-4 py-3 text-center align-middle text-sm"
                         style={{ minWidth: "10rem" }}
                       >
-                        <div>
-                          {mur?.khotsorsonMinut > 0 ? (
-                            <div>
-                              {!!mur.khotsorsonMinut &&
-                                mur.khotsorsonMinut / 60 < 10 &&
-                                "0"}
-                              {!!mur.khotsorsonMinut &&
-                                toInteger(mur.khotsorsonMinut / 60)}
-                              :
-                              {!!mur.khotsorsonMinut &&
-                                mur.khotsorsonMinut % 60 < 10 &&
-                                "0"}
-                              {!!mur.khotsorsonMinut &&
-                                mur.khotsorsonMinut % 60}{" "}
-                            </div>
-                          ) : (
-                            <div>--:--</div>
-                          )}
-                        </div>
+                        {mur?.khotsorsonMinut > 0
+                          ? `${
+                              mur.khotsorsonMinut / 60 < 10 ? "0" : ""
+                            }${toInteger(mur.khotsorsonMinut / 60)}:${
+                              mur.khotsorsonMinut % 60 < 10 ? "0" : ""
+                            }${mur.khotsorsonMinut % 60}`
+                          : "--:--"}
                       </td>
                       <td
-                        className="flex w-full items-center justify-center text-center"
+                        className="px-4 py-3 text-center align-middle text-sm"
                         style={{ minWidth: "10rem" }}
                       >
                         {
@@ -1005,7 +1036,7 @@ function jagsaalt({ token }) {
                         }
                       </td>
                       <td
-                        className="flex w-full items-center justify-center text-center"
+                        className="px-4 py-3 text-center align-middle text-sm"
                         style={{ minWidth: "5rem" }}
                       >
                         <Popover
@@ -1043,15 +1074,17 @@ function jagsaalt({ token }) {
                         </Popover>
                       </td>
                       <td
-                        className="table-report__action flex w-full items-center justify-center gap-3"
+                        className="table-report__action px-4 py-3 text-center align-middle text-sm md:table-cell"
                         style={{ minWidth: "12rem" }}
                       >
-                        <div
-                          className="flex cursor-pointer items-center justify-end gap-1 font-medium text-gray-600 hover:text-black dark:text-gray-300 "
-                          onClick={() => irstZasah(mur)}
-                        >
-                          <CheckSquareOutlined />
-                          <div>Засах</div>
+                        <div className="flex items-center justify-center gap-3">
+                          <div
+                            className="flex cursor-pointer items-center gap-1 font-medium text-gray-600 hover:text-black dark:text-gray-300"
+                            onClick={() => irstZasah(mur)}
+                          >
+                            <CheckSquareOutlined />
+                            <div>Засах</div>
+                          </div>
                         </div>
                         <div
                           className="flex cursor-pointer items-center justify-start gap-1 font-medium text-green-600 hover:text-green-400"

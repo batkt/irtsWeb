@@ -283,7 +283,7 @@ function IrtsZasakh(
     destroy,
     token,
     baiguullaga,
-    salbariinId,
+    barilgiinId,
     irtsMutate,
     ajilchdiinGaralt,
     setAjiltniiKhuudaslalt,
@@ -389,7 +389,7 @@ function IrtsZasakh(
           ajiltniiId: ajiltan._id,
           ajiltniiNer: ajiltan.ner,
           ognoo: dayjs(ognoo).format("YYYY-MM-DD 00:00:00"),
-          salbariinId: salbariinId,
+          barilgiinId: barilgiinId,
         };
         if (!!tuluv.find((a) => a === 1)) {
           ognooShalgakh(tsag.irsenTsag, "irsenTsag");
@@ -442,7 +442,7 @@ function IrtsZasakh(
         destroy();
       },
     }),
-    [data, ajiltan, tsag, ognoo, tailbar, tuluv, salbariinId],
+    [data, ajiltan, tsag, ognoo, tailbar, tuluv, barilgiinId],
   );
   function songogdsonTuluvinOgnooSetlekh(
     ekhlekh,
@@ -550,7 +550,7 @@ function IrtsZasakh(
     uilchilgee(token)
       .post("/ajillakhTsagAvya", {
         ognoo: dayjs(ognoo).format("YYYY-MM-DD 00:00:00"),
-        salbariinId: salbariinId,
+        barilgiinId: barilgiinId,
       })
       .then(({ data }) => {
         setSalbariinStag(data);

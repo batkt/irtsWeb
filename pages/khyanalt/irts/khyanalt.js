@@ -20,7 +20,7 @@ import IrtsKharakh from "components/irts/IrtsKharakh";
 import { modal } from "components/ant/Modal";
 
 function khyanalt({ token }) {
-  const { baiguullaga, salbariinId } = useAuth();
+  const { baiguullaga, barilgiinId } = useAuth();
   const printRef = React.useRef(null);
   const [ognoo, setOgnoo] = useState(null);
   const [data, setData] = useState([]);
@@ -42,7 +42,7 @@ function khyanalt({ token }) {
           .add(1, "month")
           .subtract(1, "day")
           .format("YYYY-MM-DD 23:59:59"),
-        salbariinId: salbariinId,
+        barilgiinId: barilgiinId,
       })
       .then(({ data }) => {
         if (!!data) {
@@ -56,7 +56,7 @@ function khyanalt({ token }) {
     if (!!ognoo && !!sariinUrt) {
       setCalendar(sariinUrt);
     } else setCalendar(31);
-  }, [ognoo, salbariinId]);
+  }, [ognoo, barilgiinId]);
 
   function delegrenguiKharakh(sar, ner, udur) {
     uilchilgee(token)
@@ -109,7 +109,7 @@ function khyanalt({ token }) {
             ),
           content: (
             <IrtsKharakh
-              salbariinId={salbariinId}
+              barilgiinId={barilgiinId}
               data={data?.jagsaalt[0]}
               ref={erstKharakhRef}
               token={token}
