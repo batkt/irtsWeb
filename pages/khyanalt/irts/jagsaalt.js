@@ -966,12 +966,24 @@ function jagsaalt({ token }) {
                         className="px-4 py-3 text-center align-middle text-sm"
                         style={{ minWidth: "10rem" }}
                       >
-                        {(() => {
-                          const minutes = getRealAjillasanMinut(mur);
-                          return typeof minutes === "number"
-                            ? minuutiigTsagBolgoh(minutes)
-                            : "--:--";
-                        })()}
+                        <div>
+                          {mur?.ajillasanMinut > 0 ? (
+                            <div>
+                              {!!mur.ajillasanMinut &&
+                                mur.ajillasanMinut / 60 < 10 &&
+                                "0"}
+                              {!!mur.ajillasanMinut &&
+                                toInteger(mur.ajillasanMinut / 60)}
+                              :
+                              {!!mur.ajillasanMinut &&
+                                mur.ajillasanMinut % 60 < 10 &&
+                                "0"}
+                              {!!mur.ajillasanMinut && mur.ajillasanMinut % 60}{" "}
+                            </div>
+                          ) : (
+                            <div>--:--</div>
+                          )}
+                        </div>
                       </td>
                       <td
                         className="px-4 py-3 text-center align-middle text-sm"
