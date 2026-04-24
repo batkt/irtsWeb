@@ -72,7 +72,9 @@ function Admin({
   const { i18n, t } = useTranslation();
   const [focusaasGarsan, setFocusaasGarsan] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
+  const [isOnline, setIsOnline] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [syncStatus, setSyncStatus] = useState("idle");
 
   const lastSyncTime = useRef(0);
   const syncTimeoutRef = useRef(null);
